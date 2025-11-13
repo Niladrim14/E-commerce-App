@@ -1,9 +1,10 @@
-import React from 'react'
+import React,{useState} from 'react'
 import {assets} from '../assets/assets'
 import {NavLink} from 'react-router-dom'
 import {Link} from 'react-router-dom'
 
 const Navbar = () => {
+  const [visible, setVisible] = useState(false);
   return (
         <div className=' flex items-center justify-between py-4 font-medium '>
             <img src={assets.logo} alt="Logo" />
@@ -48,9 +49,12 @@ const Navbar = () => {
                      <img src={assets.cart_icon} alt="Cart" className='w-5 min-w-5 cursor-pointer' />
                      <p className='absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[10px]  '>10</p>
                     </Link>
+                   
                  </div>
-
+                  <img  onClick={()=> setVisible(true)} src={assets.menu_icon} className='w-5 cursor-pointer sm:hidden' alt="" />
              </div>
+             {/* Sidebar Menu For Small Screens  */}
+             <div className={`${visible ? 'block' : 'hidden'} sm:hidden`}></div>
                
         </div>
   )
