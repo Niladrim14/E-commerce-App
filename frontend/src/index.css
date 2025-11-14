@@ -13,3 +13,6 @@ a.active hr{
 * {
   font-family: 'Outfit', sans-serif;
 }
+.h-\[2px\] {
+    height: 2px;
+}
