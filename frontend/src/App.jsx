@@ -11,11 +11,15 @@ import PlaceOrder from './pages/PlaceOrder'
 import Orders from './pages/Orders'
 import Contact from './pages/Contact'
 import Navbar from './components/Navbar'
+import { Toaster } from 'react-hot-toast'
+import Footer from './components/Footer'
 
 
 const App = () => {
   return (
-    <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'> <Navbar/>
+    <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'> 
+    <Toaster position="top-right" />
+    <Navbar/>
     <Routes>
       <Route path='/' element={<Home/>} />
       <Route path='/collection' element={<Collection/>} />
@@ -27,7 +31,7 @@ const App = () => {
       <Route path='/placeorder' element={<PlaceOrder/>} />
       <Route path='/orders' element={<Orders/>} />
     </Routes>
-    
+     <Footer/>
     
     </div>
   )
