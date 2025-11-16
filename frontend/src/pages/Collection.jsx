@@ -1,55 +1,68 @@
-import React, { use } from 'react'
-import { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../context/ShopContext';
 import { assets } from '../assets/assets';
 import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
-import { useEffect } from 'react';
 
 const Collection = () => {
   const {products} = useContext(ShopContext);
-  const [showFilters, setShowFilters] = React.useState(false);
-  const [FilteredProducts, setFilteredProducts] = React.useState([]);
-  const [selectedCategories, setSelectedCategories] = React.useState([]);
-  const [selectedTypes, setSelectedTypes] = React.useState([]);
+  const [showFilters, setShowFilters] = useState(false);
+  const [FilteredProducts, setFilteredProducts] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [subCategory, setSubCategory] = useState([]);
+  const [sortOption, setSortOption] = useState('relavent');
  
-  
-const toggleCategory = (category) => {
-    if (selectedCategories.includes(category.target.value)) {
-      setSelectedCategories(selectedCategories.filter((cat) => cat !== category.target.value));
+  // Generic toggle function for any filter type
+  const toggleFilter = (value, selectedArray, setSelectedArray) => {
+    if (selectedArray.includes(value)) {
+      // Remove if already selected
+      setSelectedArray(prev => prev.filter((item) => item !== value));
     } else {
-      setSelectedCategories([...selectedCategories, category.target.value]);
+      // Add if not selected
+      setSelectedArray(prev => [...prev, value]);
     }
   };
 
-  const toggleType = (type) => {
-    if (selectedTypes.includes(type.target.value)) {
-      setSelectedTypes(selectedTypes.filter((t) => t !== type.target.value));
-    } else {
-      setSelectedTypes([...selectedTypes, type.target.value]);
-    }
+  const toggleCategory = (e) => {
+    toggleFilter(e.target.value, selectedCategories, setSelectedCategories);
+  };
+
+  const toggleType = (e) => {
+    toggleFilter(e.target.value, subCategory, setSubCategory);
   };
 
   useEffect(() => {
-    setFilteredProducts(products);
-  }, []);
-  useEffect(() => {
-    let updatedProducts = products;
+    let updatedProducts = [...products];
 
+    // Filter by categories
     if (selectedCategories.length > 0) {
       updatedProducts = updatedProducts.filter((product) =>
         selectedCategories.includes(product.category)
       );
     }
 
-    if (selectedTypes.length > 0) {
+    // Filter by types
+    if (subCategory.length > 0) {
       updatedProducts = updatedProducts.filter((product) =>
-        selectedTypes.includes(product.type)
+        subCategory.includes(product.subCategory)
       );
     }
 
+    // Apply sorting
+    switch (sortOption) {
+      case 'low-high':
+        updatedProducts.sort((a, b) => a.price - b.price);
+        break;
+      case 'high-low':
+        updatedProducts.sort((a, b) => b.price - a.price);
+        break;
+      default:
+        // 'relavent' - keep original order
+        break;
+    }
+
     setFilteredProducts(updatedProducts);
-  }, [selectedCategories, selectedTypes, products]);
+  }, [selectedCategories, subCategory, products, sortOption]);
   
 
   return (
@@ -96,7 +109,7 @@ const toggleCategory = (category) => {
           </p>
              <p className='flex gap-2 mb-2 '> 
             <input type="checkbox" className='w-3' value={'Accessories'}
-             id="" />Accessories
+             id="" onChange={toggleType} />Accessories
           </p>
         </div>
       </div> 
@@ -108,10 +121,14 @@ const toggleCategory = (category) => {
         <div className='flex justify-between text-base sm:text-2xl mb-4 '>
           <Title text1={'ALL'} text2={'COLLECTIONS'}/>
           {/* Sort By Dropdown */}
-          <select className='border border-gray-300 text-sm px-2 hover:border-gray-900'>
-            <option className='bg-black text-white hover:bg-gray-800 ' value="relavent">Relevance</option>
-            <option className='bg-black text-white hover:bg-gray-800 ' value="low-high"> Low to High</option>
-            <option className='bg-black text-white hover:bg-gray-800 ' value="high-low"> High to Low</option>
+          <select 
+            className='border border-gray-300 text-sm px-2 hover:border-gray-900'
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+          >
+            <option className='bg-black text-white hover:bg-gray-800' value="relavent">Relevance</option>
+            <option className='bg-black text-white hover:bg-gray-800' value="low-high">Low to High</option>
+            <option className='bg-black text-white hover:bg-gray-800' value="high-low">High to Low</option>
           </select>
         </div>
           {/* Products Grid */}
