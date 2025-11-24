@@ -5,7 +5,7 @@ import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
 
 const Collection = () => {
-  const {products} = useContext(ShopContext);
+  const {products ,currency, delivery_fee,search,setsearch,showsearch,setshowsearch} = useContext(ShopContext);
   const [showFilters, setShowFilters] = useState(false);
   const [FilteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -33,6 +33,12 @@ const Collection = () => {
 
   useEffect(() => {
     let updatedProducts = [...products];
+     if(search && showsearch){
+      updatedProducts = updatedProducts.filter((product) =>
+        product.name.toLowerCase().includes(search.toLowerCase())
+      );
+     }
+    
 
     // Filter by categories
     if (selectedCategories.length > 0) {
@@ -47,7 +53,7 @@ const Collection = () => {
         subCategory.includes(product.subCategory)
       );
     }
-
+    
     // Apply sorting
     switch (sortOption) {
       case 'low-high':
@@ -62,7 +68,7 @@ const Collection = () => {
     }
 
     setFilteredProducts(updatedProducts);
-  }, [selectedCategories, subCategory, products, sortOption]);
+  }, [selectedCategories, subCategory, products, sortOption, search, showsearch]);
   
 
   return (
