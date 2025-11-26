@@ -6,7 +6,10 @@ const Product = () => {
   const {productId} = useParams();
   const{products,
          currency,
-         delivery_fee} = useContext(ShopContext);
+         delivery_fee,
+         cartItems,
+         addToCart,
+        } = useContext(ShopContext);
 
   const [productData, setProductData] = useState(false);
   const[image, setImage] = useState('');
@@ -20,7 +23,6 @@ const Product = () => {
         setImage(product.image[0]);
 
         setRating((Math.random() * 1.5 + 3.5).toFixed(1)); // Random rating between 3.5-5.0
-        console.log(product);
         
         
         return;
@@ -91,7 +93,7 @@ const Product = () => {
       
        
         <div className='mt-6'>
-           <button className='bg-gray-800 text-white px-9 py-3 rounded-md hover:bg-pink-600 transition-colors duration-300'>Add to Cart</button>
+           <button onClick={()=>addToCart(productData._id, selectedSize) }  className='bg-gray-800 text-white px-9 py-3 rounded-md hover:bg-pink-600 transition-colors duration-300'>Add to Cart</button>
            <hr className='mt-8 sm:w-4/5 text-gray-500 ' />
            <div className='text-sm text-gray-700 mt-5 flex flex-col gap-2'>
             <p>Why shop with us?</p>
