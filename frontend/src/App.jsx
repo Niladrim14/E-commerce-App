@@ -19,7 +19,7 @@ import SearchBar from './components/SearchBar'
 const App = () => {
   return (
     <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'> 
-    <Toaster position="top-right" />
+    <Toaster position="top-center" />
     <Navbar/>
     <SearchBar/>
     <Routes>

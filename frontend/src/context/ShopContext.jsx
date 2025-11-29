@@ -1,6 +1,7 @@
 import React, {createContext, useEffect, useState} from 'react';
 import { toast } from 'react-hot-toast';
 import { products } from '../assets/assets';
+import { useNavigate } from 'react-router-dom';
 
 export const ShopContext = createContext();
 
@@ -11,10 +12,12 @@ const ShopContextProvider = ({children}) => {
     const [search,setsearch] = useState('');
     const [showsearch,setshowsearch] = useState(false);
     const [cartItems,setCartItems] = useState({});
+    const navigate = useNavigate();
+
 
     const addToCart = async (itemId,size) => {
         if(!size){
-           toast.error("Please select a size");
+           toast.error("Please select a size", { duration: 1000 });
             return;
         }
         let cartData = structuredClone(cartItems);
@@ -29,7 +32,7 @@ const ShopContextProvider = ({children}) => {
             cartData[itemId][size] = 1;
         }
         setCartItems(cartData);
-        toast.success("Item added to cart");
+        toast.success("Item added to cart", { duration: 1000 });
     };
    
     const getCartCount = () => {
@@ -40,6 +43,24 @@ const ShopContextProvider = ({children}) => {
             }
         }
         return count;
+    };
+
+    const updateQuantity = async (itemId, size, quantity) => {
+        let cartData = structuredClone(cartItems);
+        cartData[itemId][size] = quantity;
+        setCartItems(cartData);
+    };
+
+    const getCartAmount = async () => {
+        let totalamount = 0;
+        for(const items in cartItems){
+            let productData = products.find((product) => product._id === items);
+            for (const item in cartItems[items]){
+                totalamount += productData.price * cartItems[items][item];
+            }
+        }
+      
+        return totalamount;
     };
     
    
@@ -53,7 +74,10 @@ const ShopContextProvider = ({children}) => {
          setshowsearch,
          cartItems,
          addToCart,
-         getCartCount
+         getCartCount,
+         updateQuantity,
+         getCartAmount,
+         navigate
     }
     
     return (
@@ -65,9 +89,4 @@ const ShopContextProvider = ({children}) => {
 
 export default ShopContextProvider;
 
-<button onClick={(e) => {
-    e.preventDefault(); // Prevent form submission/page reload
-    addToCart(productData._id, selectedSize);
-}}>
-    ADD TO CART
-</button>
+
